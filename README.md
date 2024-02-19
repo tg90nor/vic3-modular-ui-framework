@@ -7,16 +7,20 @@ Just define one of the hooks as a type in your mods gui files and it will be sho
 
 ### Sidebar
 
+`gui/information_panel.gui`
+
 The sidebar is not dynamic, so any new button needs to be added to this mod.
 
-| Hook Name | Type | Description |
+| Hook Name | Suggested Type | Description |
 | --- | --- | --- |
 | more_spreadsheets_sidebar_button | widget | More Spreadsheets sidebar button |
 | cheat_menu_sidebar_button | widget | Cheat Menu sidebar button |
 
 ### Market Panel
 
-| Hook Name | Type | Description |
+`gui/market_panel.gui`
+
+| Hook Name | Suggested Type | Description |
 | --- | --- | --- |
 | market_panel_header_top_left_button | widget | 30x30 button in the top left of the header, next to the Back button. |
 | market_panel_header_bottom_left_button | widget | 30x30 button in the bottom left of the header, next to the Back button. |
@@ -24,6 +28,21 @@ The sidebar is not dynamic, so any new button needs to be added to this mod.
 | market_panel_trade_routes_content_override | container | Replaces the default Trade Routes tab main content. |
 | market_panel_trade_routes_trade_suggestions_override | container | Replaces the default Highlights tab main content. |
 | market_panel_states_content_override | container | Replaces the default Members tab main content. |
+
+### States Panel
+
+`gui/states_panel.gui`
+
+| Hook Name | Suggested Type | Description |
+| --- | --- | --- |
+| states_panel_header_top_left_button | widget | 30x30 button in the top left of the header, next to the Back button. |
+| states_panel_header_bottom_left_button | widget | 30x30 button in the bottom left of the header, next to the Back button. |
+| states_panel_overview_content_override | flowcontainer | Replaces the default Overview tab main content. |
+| states_panel_condensed_override | flowcontainer | Replaces the condensed version of the Overview tab, which is not normally accessible. |
+| states_panel_buildings_content_override | flowcontainer | Replaces the default Buildings tab main content. |
+| states_panel_population_content_override | flowcontainer | Replaces the default Population tab main content. |
+| state_panel_local_goods_content_override | flowcontainer | Replaces the default Local Prices tab main content. |
+| state_panel_modifiers_content_override | flowcontainer | Replaces the default Information tab main content. |
 
 ## How to use
 

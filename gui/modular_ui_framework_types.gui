@@ -22,7 +22,7 @@ types modular_ui_framework {
 		using = clickthrough_blocker
 		size = { 100% @sidebar_mod_placeholder_height }
 	}
-	type window_header = widget {
+	type default_block_window_header = widget {
 		size = { @panel_width_plus_20 102 }
 		layoutpolicy_horizontal = preferred
 
@@ -159,4 +159,56 @@ types modular_ui_framework {
 			}
 		}
 	}
+	type default_block_window_header_two_lines = window_header {
+		blockoverride "header_texts" {
+			textbox = {
+				position = { 0 26 }
+				parentanchor = top|hcenter
+
+				using = header_font_fancy
+				using = header_font_fancy_size
+
+				block "window_header_name" {
+					raw_text = "Default Window Name"
+				}
+
+				align = center|nobaseline
+				size = { 395 30 }
+				fontsize_min = 17
+				elide = right
+
+				default_format = "#header"
+			}
+
+			container = {
+				position = { 0 64 }
+				parentanchor = top|hcenter
+
+				block "highlight_name" {}
+
+				flowcontainer = {
+					spacing = 5
+
+					textbox = {
+						using = fontsize_large
+						autoresize = yes
+						max_width = 395
+						fontsize_min = 14
+						elide = right
+						align = center|nobaseline
+						parentanchor = vcenter
+
+						block "window_header_name_line_two" {
+							raw_text = "Default Window Line Two"
+						}
+					}
+
+					block "goto_button" {}
+				}
+			}
+		}
+	}
+	# for backwards compatibility, added 2024-02-19
+	# TODO: remove this type at some point
+	type window_header = default_block_window_header {}
 }

@@ -1,27 +1,34 @@
 #positions for sidepanel buttons
 #(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
-@budget_position = 50
-@buildings_position = 100
-@trade_position = 150
-@military_position = 200
+@big_button_height = 50
+@small_button_height = 40
+@spacing_widget_height = 20
 
-@spacing_widget_1_position = 250
+@politics_position = 0
+@budget_position = @[1*big_button_height]
+@buildings_position = @[2*big_button_height]
+@trade_position = @[3*big_button_height]
+@military_position = @[4*big_button_height]
+@spacing_widget_1_position = @[5*big_button_height]
 
-@diplomatic_position = 270
-@technology_position = 310
-@culture_position = 350
-@population_position = 390
-@journal_position = 430
-@outliner_position = 530
-@companies_position = 470
+@section_2_position = @[spacing_widget_1_position+spacing_widget_height]
+@diplomatic_position = @section_2_position
+@technology_position = @[1*small_button_height+section_2_position]
+@culture_position = @[2*small_button_height+section_2_position]
+@population_position = @[3*small_button_height+section_2_position]
+@journal_position = @[4*small_button_height+section_2_position]
+@companies_position = @[5*small_button_height+section_2_position]
+@spacing_widget_2_position = @[6*small_button_height+section_2_position]
 
-@spacing_widget_2_position = 510
-@spacing_widget_3_position = 570
+@section_3_position = @[spacing_widget_2_position+spacing_widget_height]
+@outliner_position = @section_3_position
+@spacing_widget_3_position = @[1*small_button_height+section_3_position]
 
-@maplist_position = 590
-
-@more_spreadsheets_position = 630
-@cheat_menu_position = 670
+@section_4_position = @[spacing_widget_3_position+spacing_widget_height]
+@maplist_position = @section_4_position
+#positions for mod buttons:
+@more_spreadsheets_position = @[1*small_button_height+section_4_position]
+@cheat_menu_position = @[2*small_button_height+section_4_position]
 
 types information_panel_bar_types {
 	type information_panel_bar = widget {

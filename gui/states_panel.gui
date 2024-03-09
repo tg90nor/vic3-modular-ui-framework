@@ -1,4 +1,4 @@
-# COPY-PASTED GAME DEFAULTS
+# COPY-PASTED FOR NOW
 @panel_width_minus_10 = 530			# used to be 450
 @panel_width = 540  				# used to be 460
 @panel_width_half = 270				# used to be 230
@@ -9,11 +9,13 @@
 @panel_width_plus_30 = 570			# used to be 490
 @panel_width_plus_70 = 610			# used to be 530
 
-types state_panel_types {
-	type states_panel =  default_block_window {
+types state_panel_types
+{
+	type states_panel =  default_block_window { ### MODULAR UI PATCH
 		name = "states_panel"
 		datacontext = "[StatesPanel.AccessState]"
 
+		### BEGIN MODULAR UI PATCH
 		blockoverride "window_header" {
 			default_block_window_header_two_lines = {
 				blockoverride "window_header_name"{
@@ -84,6 +86,7 @@ types state_panel_types {
 
 			}
 		}
+		### END MODULAR UI PATCH
 
 		blockoverride "fixed_top" {
 			tab_buttons = {
@@ -200,10 +203,18 @@ types state_panel_types {
 			}
 		}
 
-		blockoverride "scrollarea_content" {
+		### BEGIN MODULAR UI PATCH
+		# blockoverride "highlight_name" {
+		# 	name = "tutorial_highlight_second_header"
+		# }
+		### END MODULAR UI PATCH
+
+		blockoverride "scrollarea_content"
+		{
 			container = {
 				parentanchor = hcenter
 
+				### BEGIN MODULAR UI PATCH
 				# state_panel_overview_content = {
 				# 	visible = "[And(Not(GetVariableSystem.Exists('state_panel_condensed')), InformationPanel.IsTabSelected('default'))]"
 				container = {
@@ -285,10 +296,12 @@ types state_panel_types {
 						using = default_content_fade
 					}
 				}
+				### END MODULAR UI PATCH
 			}
 		}
 
-		blockoverride "fixed_bottom" {
+		blockoverride "fixed_bottom"
+		{
 			widget = {
 				size = { 5 5 }
 				visible = "[InformationPanel.IsTabSelected('buildings')]"
@@ -297,6 +310,36 @@ types state_panel_types {
 				visible = "[InformationPanel.IsTabSelected('buildings')]"
 			}
 		}
+
+		### BEGIN MODULAR UI PATCH
+		# blockoverride "pin_visibility" {
+		# 	visible = "[ObjectsEqual(State.GetOwner, GetPlayer.Self)]"
+		# }
+
+		# blockoverride "pin_properties" {
+		# 	visible = "[StatesPanel.AccessState.IsPinnedInOutliner]"
+		# 	onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
+		# 	datacontext = "[StatesPanel.AccessState]"
+		# 	tooltip = "UNPIN_STATE"
+		# }
+
+		# blockoverride "unpin_properties" {
+		# 	visible = "[Not(StatesPanel.AccessState.IsPinnedInOutliner)]"
+		# 	onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
+		# 	datacontext = "[StatesPanel.AccessState]"
+		# 	tooltip = "PIN_STATE"
+		# }
+
+		# blockoverride "goto_visibility" {
+		# 	visible = yes
+		# }
+
+		# blockoverride "goto_properties" {
+		# 	onclick = "[State.ZoomToCapital]"
+		# 	tooltip = "ZOOM_TO_STATE"
+		# 	enabled = "[Not( State.IsZoomingToCapital )]"
+		# }
+		### END MODULAR UI PATCH
 	}
 
 	type state_panel_overview_content = flowcontainer {
@@ -482,8 +525,8 @@ types state_panel_types {
 
 			state_panel_status_item = {
 				tooltip = "CURRENT_GDP_STATE"
-				onmousehierarchyenter = "[SelectMapModeByKey('mm_gdp')]"
-				onmousehierarchyleave = "[UnforceMapMode]"
+				onmousehierarchyenter = "[SetTempMapModeByKey('mm_gdp')]"
+				onmousehierarchyleave = "[RemoveTempMapMode]"
 				alwaystransparent = no
 
 				blockoverride "texture" {
@@ -495,8 +538,8 @@ types state_panel_types {
 				}
 			}
 			state_panel_status_item_small = {
-				onmousehierarchyenter = "[SelectMapModeByKey('mm_trade')]"
-				onmousehierarchyleave = "[UnforceMapMode]"
+				onmousehierarchyenter = "[SetTempMapModeByKey('mm_trade')]"
+				onmousehierarchyleave = "[RemoveTempMapMode]"
 				visible = "[State.IsMarketCapital]"
 				tooltip = "TOOLTIP_MARKET_CAPITAL_STATE"
 				onmousehierarchyenter = "[AccessHighlightManager.HighlightMarket(State.GetMarket.Self)]"
@@ -519,8 +562,8 @@ types state_panel_types {
 			}
 
 			state_panel_status_item_small = {
-				onmousehierarchyenter = "[SelectMapModeByKey('mm_trade')]"
-				onmousehierarchyleave = "[UnforceMapMode]"
+				onmousehierarchyenter = "[SetTempMapModeByKey('mm_trade')]"
+				onmousehierarchyleave = "[RemoveTempMapMode]"
 				visible = "[Not(State.IsMarketCapital)]"
 				tooltip = "MARKET_STATES_PANEL_MARKET_ACCESS_TOOLTIP"
 				onmousehierarchyenter = "[AccessHighlightManager.HighlightMarket(State.GetMarket.Self)]"
@@ -585,8 +628,8 @@ types state_panel_types {
 				flowcontainer = {
 					tooltip = "TOOLTIP_STATE_POPULATION"
 					spacing = 5
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_population')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_population')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 
 					icon = {
@@ -608,8 +651,8 @@ types state_panel_types {
 
 				flowcontainer = {
 					tooltip = "NUM_SOL"
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_standard_of_living')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_standard_of_living')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 					spacing = 5
 
@@ -930,8 +973,8 @@ types state_panel_types {
 					datacontext = "[State.GetStateRegion]"
 					tooltip = "STATE_POLLUTION"
 
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_pollution')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_pollution')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 
 
@@ -1236,8 +1279,8 @@ types state_panel_types {
 				widget = {
 					size = { @panel_width 50 }
 					tooltip = "TOOLTIP_STATE_POPULATION"
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_population')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_population')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 
 					background = {
@@ -1273,8 +1316,8 @@ types state_panel_types {
 				widget = {
 					tooltip = "TOOLTIP_STATE_MIGRATION"
 					size = { @panel_width 40 }
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_migration')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_migration')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 
 					background = {
@@ -1294,7 +1337,7 @@ types state_panel_types {
 						textbox = {
 							layoutpolicy_horizontal = expanding
 							layoutpolicy_vertical = expanding
-							alpha = "[TransparentIfZero_int64(State.GetPopNetMigration)]"
+							alpha = "[TransparentIfZero_int64(State.GetWeeklyPopNetMigration)]"
 							text = "STATE_MIGRATION_VALUE"
 							align = left|nobaseline
 						}
@@ -1309,6 +1352,42 @@ types state_panel_types {
 					}
 				}
 			}		
+
+			textbox = {
+				text = "HEADER_CULTURAL_COMMUNITIES"
+				autoresize = yes
+				align = left|nobaseline
+				parentanchor = hcenter
+				widgetanchor = center
+			}
+
+			dynamicgridbox = {
+				parentanchor = hcenter
+				datamodel = "[State.GetCulturalCommunities]"
+				datamodel_wrap = 3
+				flipdirection = yes
+				item = {
+					widget = {
+						size = { 180 40 }
+						widget = {
+							parentanchor = center
+						  	size = { 175 35 }
+						 	background = {
+								using = entry_bg_simple
+						  	}
+						  	textbox = {
+								parentanchor = center
+								autoresize = yes
+							  	align = hcenter|nobaseline
+							  	max_width = 165
+							  	fontsize_min = 14
+							  	elide = right
+							  	text = "[CulturalCommunity.GetCulture.GetName]"
+						  	}
+					   	}
+					}
+				}
+			}
 
 			container = {
 				parentanchor = hcenter
@@ -1331,8 +1410,8 @@ types state_panel_types {
 						container = {
 							minimumsize = { 315 -1 }
 							tooltip = "NUM_SOL"
-							onmousehierarchyenter = "[SelectMapModeByKey('mm_standard_of_living')]"
-							onmousehierarchyleave = "[UnforceMapMode]"
+							onmousehierarchyenter = "[SetTempMapModeByKey('mm_standard_of_living')]"
+							onmousehierarchyleave = "[RemoveTempMapMode]"
 							alwaystransparent = no
 
 							textbox = {
@@ -2244,8 +2323,8 @@ types state_panel_types {
 
 				state_panel_status_item_condensed = {
 					tooltip = "NUM_SOL"
-					onmousehierarchyenter = "[SelectMapModeByKey('mm_standard_of_living')]"
-					onmousehierarchyleave = "[UnforceMapMode]"
+					onmousehierarchyenter = "[SetTempMapModeByKey('mm_standard_of_living')]"
+					onmousehierarchyleave = "[RemoveTempMapMode]"
 					alwaystransparent = no
 
 					textbox = {
@@ -2695,6 +2774,7 @@ types state_panel_types {
 		}
 	}
 
+	# Vanilla code refactored out of states_panel.gui type state_panel {}
 	type state_panel_local_goods_content = flowcontainer {
 		parentanchor = hcenter
 		direction = vertical
@@ -3046,7 +3126,8 @@ types state_panel_types {
 	}
 }
 
-types information_panels_types {
+types information_panels_types
+{
 	type state_panel_button = button {
 		using = default_button
 		minimumsize = { @panel_width -1 }
@@ -3456,16 +3537,9 @@ types building_item_types
 						position = { 5 31 }
 						parentanchor = left
 
-						### EMPLOYMENT WARNING
+						### EMPLOYMENT WARNING						
 						icon = {
-							visible = "[And(Building.ShouldShowAsUnableToHire,Building.HasFailedHires)]"
-							size = { 30 30 }
-							texture = "gfx/interface/icons/generic_icons/employment_not_full.dds"
-							tooltip = "NOT_FULLY_EMPLOYED"
-						}
-						
-						icon = {
-							visible = "[And(Building.ShouldShowAsUnableToHire,Not(Building.HasFailedHires))]"
+							visible = "[Building.ShouldShowAsUnableToHire]"
 							size = { 30 30 }
 							texture = "gfx/interface/icons/generic_icons/employment_not_full.dds"
 							tooltip = "NOT_HIRING"
@@ -3475,7 +3549,7 @@ types building_item_types
 							visible = "[Building.ShouldShowAsUnwillingToHire]"
 							size = { 30 30 }
 							texture = "gfx/interface/icons/generic_icons/employment_not_hiring.dds"
-							tooltip = "NOT_FULLY_EMPLOYED"
+							tooltip = "NOT_HIRING"
 						}						
 
 						icon = {
@@ -3662,15 +3736,7 @@ types building_item_types
 
 					### EMPLOYMENT WARNING
 					icon = {
-						visible = "[And(Building.ShouldShowAsUnableToHire,Building.HasFailedHires)]"
-						texture = "gfx/interface/icons/generic_icons/employment_not_full.dds"
-						tooltip = "NOT_FULLY_EMPLOYED"
-						size = { 30 30 }
-						parentanchor = vcenter
-					}
-					
-					icon = {
-						visible = "[And(Building.ShouldShowAsUnableToHire,Not(Building.HasFailedHires))]"
+						visible = "[Building.ShouldShowAsUnableToHire]"
 						texture = "gfx/interface/icons/generic_icons/employment_not_full.dds"
 						tooltip = "NOT_HIRING"
 						size = { 30 30 }
@@ -3680,7 +3746,7 @@ types building_item_types
 					icon = {
 						visible = "[Building.ShouldShowAsUnwillingToHire]"
 						texture = "gfx/interface/icons/generic_icons/employment_not_hiring.dds"
-						tooltip = "NOT_FULLY_EMPLOYED"
+						tooltip = "NOT_HIRING"
 						size = { 30 30 }
 						parentanchor = vcenter
 					}					

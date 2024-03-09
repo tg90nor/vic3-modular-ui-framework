@@ -7,14 +7,15 @@ Just define one of the hooks as a type in your mods gui files and it will be sho
 
 ### Sidebar
 
-`gui/information_panel.gui`
+`gui/information_panel_bar.gui`
 
 The sidebar is not dynamic, so any new button needs to be added to this mod.
 
 | Hook Name | Suggested Type | Description |
 | --- | --- | --- |
-| more_spreadsheets_sidebar_button | widget | More Spreadsheets sidebar button |
-| cheat_menu_sidebar_button | widget | Cheat Menu sidebar button |
+| more_spreadsheets_sidebar_button | widget | More Spreadsheets mod sidebar button |
+| cheat_menu_sidebar_button | widget | Cheat Menu mod sidebar button |
+| victoria_universalis_iv_sidebar_button | widget | Victoria Universalis IV mod sidebar button. |
 
 ### Market Panel
 

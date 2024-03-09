@@ -1,0 +1,997 @@
+diff --git a/gui/states_panel.v1.6.1.gui b/gui/states_panel.gui
+index d5b31c7..049f86f 100755
+--- a/gui/states_panel.v1.6.1.gui
++++ b/gui/states_panel.gui
+@@ -11,28 +11,82 @@
+ 
+ types state_panel_types
+ {
+-	type states_panel =  default_block_window_two_lines {
++	type states_panel =  default_block_window { ### MODULAR UI PATCH
+ 		name = "states_panel"
+ 		datacontext = "[StatesPanel.AccessState]"
+ 
+-		blockoverride "window_header_name"
+-		{
+-			raw_text = "#BOLD [State.GetName]#!"
+-		}
++		### BEGIN MODULAR UI PATCH
++		blockoverride "window_header" {
++			default_block_window_header_two_lines = {
++				blockoverride "window_header_name"{
++					raw_text = "#BOLD [State.GetName]#!"
++				}
++
++				blockoverride "window_header_name_line_two" {
++					text = "STATE_IN_COUNTRY_SUBTITLE"
++				}
++
++				blockoverride "highlight_name" {
++					name = "tutorial_highlight_second_header"
++				}
++
++				blockoverride "top_left_button" {
++					# extension hook
++					states_panel_header_top_left_button = {
++						position = { 48 16 }
++						size = { 30 30 }
++					}
++				}
++
++				blockoverride "bottom_left_button" {
++					# extension hook
++					states_panel_header_bottom_left_button = {
++						position = { 48 59 }
++						size = { 30 30 }
++					}
++				}
++
++				blockoverride "pin_visibility" {
++					visible = "[ObjectsEqual(State.GetOwner, GetPlayer.Self)]"
++				}
++
++				blockoverride "pin_properties" {
++					visible = "[StatesPanel.AccessState.IsPinnedInOutliner]"
++					onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
++					datacontext = "[StatesPanel.AccessState]"
++					tooltip = "UNPIN_STATE"
++				}
++
++				blockoverride "unpin_properties" {
++					visible = "[Not(StatesPanel.AccessState.IsPinnedInOutliner)]"
++					onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
++					datacontext = "[StatesPanel.AccessState]"
++					tooltip = "PIN_STATE"
++				}
++
++				blockoverride "goto_button" {
++					button_icon_goto = {
++						datacontext = "[StatesPanel.GetState.GetCountry]"
++						size = { 30 30 }
++						onclick = "[InformationPanelBar.OpenCountryPanel(StatesPanel.GetState.GetCountry)]"
++						tooltip = "GO_TO_BUTTON_COUNTRY"
++					}
++				}
++
++				blockoverride "goto_visibility" {
++					visible = yes
++				}
++
++				blockoverride "goto_properties" {
++					onclick = "[State.ZoomToCapital]"
++					tooltip = "ZOOM_TO_STATE"
++					enabled = "[Not( State.IsZoomingToCapital )]"
++				}
+ 
+-		blockoverride "window_header_name_line_two" {
+-			text = "STATE_IN_COUNTRY_SUBTITLE"
+-		}
+ 
+-		blockoverride "goto_button" {
+-			button_icon_goto = {
+-				datacontext = "[StatesPanel.GetState.GetCountry]"
+-				size = { 30 30 }
+-				onclick = "[InformationPanelBar.OpenCountryPanel(StatesPanel.GetState.GetCountry)]"
+-				tooltip = "GO_TO_BUTTON_COUNTRY"
+-				input_action = "go_to_details"
+ 			}
+ 		}
++		### END MODULAR UI PATCH
+ 
+ 		blockoverride "fixed_top" {
+ 			tab_buttons = {
+@@ -149,391 +203,100 @@ types state_panel_types
+ 			}
+ 		}
+ 
+-		blockoverride "highlight_name" {
+-			name = "tutorial_highlight_second_header"
+-		}
++		### BEGIN MODULAR UI PATCH
++		# blockoverride "highlight_name" {
++		# 	name = "tutorial_highlight_second_header"
++		# }
++		### END MODULAR UI PATCH
+ 
+ 		blockoverride "scrollarea_content"
+ 		{
+ 			container = {
+ 				parentanchor = hcenter
+ 
+-				state_panel_overview_content = {
++				### BEGIN MODULAR UI PATCH
++				# state_panel_overview_content = {
++				# 	visible = "[And(Not(GetVariableSystem.Exists('state_panel_condensed')), InformationPanel.IsTabSelected('default'))]"
++				container = {
+ 					visible = "[And(Not(GetVariableSystem.Exists('state_panel_condensed')), InformationPanel.IsTabSelected('default'))]"
+-					using = default_content_fade
++					# extension hook
++					state_panel_overview_content_override = {}
++					state_panel_overview_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
++					}
+ 				}
+ 
+-				state_panel_condensed = {
++				# state_panel_condensed = {
++				# 	visible = "[And(GetVariableSystem.Exists('state_panel_condensed'), InformationPanel.IsTabSelected('default'))]"
++				container = {
+ 					visible = "[And(GetVariableSystem.Exists('state_panel_condensed'), InformationPanel.IsTabSelected('default'))]"
+-					using = default_content_fade
++					# extension hook
++					state_panel_condensed_override = {}
++					state_panel_condensed = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
++					}
+ 				}
+ 
+-				state_panel_buildings_content = {
++				# state_panel_buildings_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('buildings')]"
++				# 	### To remove the "Right-click to open context menu" on buildings for States not owned by the player
++				# 	onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( ObjectsEqual(StatesPanel.GetState.GetCountry.Self, GetMetaPlayer.GetPlayedOrObservedCountry.Self) )]"
++				# 	onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
++				container = {
+ 					visible = "[InformationPanel.IsTabSelected('buildings')]"
+-					using = default_content_fade
+-
+-					### To remove the "Right-click to open context menu" on buildings for States not owned by the player
+-					onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( ObjectsEqual(StatesPanel.GetState.GetCountry.Self, GetMetaPlayer.GetPlayedOrObservedCountry.Self) )]"
+-					onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
+-				}
+-
+-				state_panel_population_content = {}
+-
+-				state_panel_modifiers_content = {
+-					visible = "[InformationPanel.IsTabSelected('modifiers')]"
+-					using = default_content_fade
++					# extension hook
++					state_panel_buildings_content_override = {
++						### To remove the "Right-click to open context menu" on buildings for States not owned by the player
++						onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( ObjectsEqual(StatesPanel.GetState.GetCountry.Self, GetMetaPlayer.GetPlayedOrObservedCountry.Self) )]"
++						onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
++					}
++					state_panel_buildings_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
++						### To remove the "Right-click to open context menu" on buildings for States not owned by the player
++						onmousehierarchyenter = "[SetCanOpenRightClickContextMenu( ObjectsEqual(StatesPanel.GetState.GetCountry.Self, GetMetaPlayer.GetPlayedOrObservedCountry.Self) )]"
++						onmousehierarchyleave = "[SetCanOpenRightClickContextMenu( '(bool)yes' )]"
++					}
+ 				}
+ 
+-				flowcontainer = {
+-					visible =  "[InformationPanel.IsTabSelected('local_goods')]"
+-					parentanchor = hcenter
+-					direction = vertical
+-
+-					flowcontainer = {
+-						using = default_list_position
+-						margin = { 0 5 }
+-						margin_top = 10
+-
+-						sort_button = {
+-							size = { 55 20 }
+-							button = {
+-								texture = "gfx/interface/buttons/sort_button_icons/sort_icon_good.dds"
+-								size = { 25 25 }
+-								parentanchor = center
+-								alwaystransparent = yes
+-							}
+-
+-							onclick = "[StatesPanel.Sort('name')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "concept_good_production"
+-							tooltip = "concept_good_production"
+-							size = { 55 20 }
+-
+-							onclick = "[StatesPanel.Sort('production')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "concept_good_consumption"
+-							tooltip = "concept_good_consumption"
+-							size = { 60 20 }
+-							margin_right = 7
+-
+-							onclick = "[StatesPanel.Sort('consumption')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "BALANCE"
+-							size = { 90 20 }
+-							margin_right = 7
+-
+-							onclick = "[StatesPanel.Sort('balance')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "concept_local_price"
+-							size = { 100 20 }
+-
+-							onclick = "[StatesPanel.Sort('state_price_relative_to_base')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "concept_market_price"
+-							tooltip = "concept_market_price"
+-							size = { 100 20 }
+-
+-							onclick = "[StatesPanel.Sort('market_price_relative_to_base')]"
+-						}
+-
+-						sort_button = {
+-							align = hcenter|nobaseline
+-							text = "PRICE_DIFFERENCE"
+-							tooltip = "PRICE_DIFFERENCE"
+-							size = { 80 20 }
+-
+-							onclick = "[StatesPanel.Sort('price_difference')]"
+-						}
++				# state_panel_population_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('population')]"
++				container = {
++					visible = "[InformationPanel.IsTabSelected('population')]"
++					# extension hook
++					state_panel_population_content_override = {}
++					state_panel_population_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
+ 					}
++				}
+ 
+-					flowcontainer = {
+-						datamodel = "[StatesPanel.AccessLocalGoods]"
+-						direction = vertical
+-						parentanchor = hcenter
+-
+-						item = {
+-							button = {
+-								size = { @panel_width 50 }
+-								using = default_button
+-								onclick = "[InformationPanelBar.OpenGoodsStatePanel(State.Self, Goods.Self)]"
+-								using = select_button_sound
+-								onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
+-
+-								block "tooltip" {
+-								}
+-
+-								flowcontainer = {
+-									parentanchor = vcenter
+-									widgetanchor = vcenter
+-
+-									using = goods_list_item
+-
+-									textbox = {
+-										align = right|nobaseline
+-										text = "[Goods.GetStateProductionWithTooltip|Dv]"
+-										size = { 55 40 }
+-										margin_right = 10
+-										parentanchor = vcenter
+-										alpha = "[TransparentIfZero(Goods.GetStateProduction)]"
+-									}
+-
+-									vertical_divider = {}
+-
+-									textbox = {
+-										align = right|nobaseline
+-										text = "[Goods.GetStateConsumptionWithTooltip|Dv]"
+-										size = { 60 40 }
+-										margin_right = 10
+-										parentanchor = vcenter
+-										alpha = "[TransparentIfZero(Goods.GetStateConsumption)]"
+-									}
+-
+-									vertical_divider = {}
+-
+-									flowcontainer = {
+-										direction = vertical
+-										minimumsize = { 90 52 }
+-										margin_top = 10
+-										spacing = 5
+-										tooltip = "STATE_GOODS_BALANCE_TOOLTIP"
+-
+-										textbox = {
+-											visible = "[GreaterThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+-											align = right|nobaseline
+-											text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_GOLD"
+-											autoresize = yes
+-											margin_right = 15
+-											parentanchor = right
+-										}
+-
+-										textbox = {
+-											visible = "[EqualTo_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+-											align = hcenter|nobaseline
+-											text = "GOODS_LOCAL_PRICE_PANEL_BALANCE"
+-											autoresize = yes
+-											parentanchor = hcenter
+-										}
+-
+-										textbox = {
+-											visible = "[LessThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
+-											align = left|nobaseline
+-											text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_BLUE"
+-											autoresize = yes
+-											margin_left = 15
+-											parentanchor = left
+-										}
+-
+-										double_direction_progressbar_gold = {
+-											size = { 60 6 }
+-											parentanchor = hcenter
+-
+-											blockoverride "negative_min_max_values" {
+-												min = "[Negate_float(FixedPointToFloat(Goods.GetState.GetMaxImbalanceScaledByBasePrice))]"
+-												max = 0
+-											}
+-
+-											blockoverride "positive_min_max_values" {
+-												min = 0
+-												max = "[FixedPointToFloat(Goods.GetState.GetMaxImbalanceScaledByBasePrice)]"
+-											}
+-
+-											blockoverride "value_left" {
+-												value = "[FixedPointToInt(Multiply_CFixedPoint(Goods.GetStateProductionConsumptionDiff, Goods.GetBasePrice))]"
+-											}
+-											blockoverride "value_right" {
+-												value = "[FixedPointToInt(Multiply_CFixedPoint(Goods.GetStateProductionConsumptionDiff, Goods.GetBasePrice))]"
+-											}
+-										}
+-									}
+-
+-									vertical_divider = {}
+-
+-									container = {
+-										tooltip = "[Goods.GetStatePriceDesc]"
+-										minimumsize = { 100 -1 }
+-										parentanchor = vcenter
+-
+-										flowcontainer = {
+-											spacing = 5
+-											direction = vertical
+-											parentanchor = hcenter
+-
+-											textbox = {
+-												text = "GOODS_LOCAL_PRICE_INFO"
+-												align = hcenter|nobaseline
+-												autoresize = yes
+-												parentanchor = hcenter
+-											}
+-
+-											double_direction_progressbar_gold = {
+-												visible = no
+-												size = { 60 6 }
+-												parentanchor = hcenter
+-
+-												blockoverride "negative_min_max_values" {
+-													min = -0.75
+-													max = 0
+-												}
+-
+-												blockoverride "positive_min_max_values" {
+-													min = 0
+-													max = 0.75
+-												}
+-												
+-												blockoverride "value_left" {
+-													value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice))]"
+-												}
+-												blockoverride "value_right" {
+-													value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice))]"
+-												}
+-											}
+-										}
+-									}
+-
+-									vertical_divider = {}
+-
+-									container = {
+-										using = market_price_tooltip_with_graph
+-										minimumsize = { 100 -1 }
+-										parentanchor = vcenter
+-
+-										flowcontainer = {
+-											spacing = 5
+-											direction = vertical
+-											parentanchor = hcenter
+-
+-											textbox = {
+-												visible = "[Not(Goods.IsLocal)]"
+-												raw_text = "@money![Goods.GetMarketPrice|0v] [Goods.GetCompareIconAgainstBasePriceNoFormatting( Goods.GetMarketPrice )]"
+-												align = hcenter|nobaseline
+-												autoresize = yes
+-												parentanchor = hcenter
+-											}
+-
+-											textbox = {
+-												visible = "[Goods.IsLocal]"
+-												alpha = "[TransparentIfTrue(Goods.IsLocal)]"
+-												align = hcenter|nobaseline
+-												autoresize = yes
+-												parentanchor = hcenter
+-												text = "NOT_AVAILABLE"
+-												tooltip = "concept_local_good_desc"
+-											}
+-
+-											double_direction_progressbar_gold = {
+-												visible = no
+-												size = { 60 6 }
+-												parentanchor = hcenter
+-
+-												blockoverride "negative_min_max_values" {
+-													min = -0.75
+-													max = 0
+-												}
+-
+-												blockoverride "positive_min_max_values" {
+-													min = 0
+-													max = 0.75
+-												}
+-												
+-												blockoverride "value_left" {
+-													value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
+-												}
+-												blockoverride "value_right" {
+-													value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
+-												}
+-											}
+-										}
+-									}
+-
+-									vertical_divider = {}
+-									
+-									widget = {
+-										size = { 70 40 }
+-										parentanchor = vcenter
+-										
+-										textbox = {
+-											visible = "[Not(Goods.IsLocal)]"
+-											align = right|nobaseline
+-											text = "[Goods.GetStateToMarketPriceDiff|%0=-]"
+-											size = { 70 40 }
+-											margin_right = 10
+-											tooltip = "STATE_TO_MARKET_PRICE_DIFF_TOOLTIP"
+-										}
+-
+-										textbox = {
+-											visible = "[Goods.IsLocal]"
+-											alpha = "[TransparentIfTrue(Goods.IsLocal)]"
+-											align = right|nobaseline
+-											text = "NOT_AVAILABLE"
+-											tooltip = "concept_local_good_desc"	
+-											size = { 70 40 }
+-											margin_right = 10
+-										}
+-									}
+-								}
+-							}
+-						}
++				# state_panel_local_goods_content = {
++				# 	visible =  "[InformationPanel.IsTabSelected('local_goods')]"
++				container = {
++					visible = "[InformationPanel.IsTabSelected('local_goods')]"
++					# extension hook
++					state_panel_local_goods_content_override = {}
++					state_panel_local_goods_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
+ 					}
++				}
+ 
+-
+-					flowcontainer = {
+-						direction = vertical
+-						visible = "[Not(IsDataModelEmpty(StatesPanel.AccessNonLocalGoods))]"
+-
+-						widget = { size = { 20 20 } }
+-
+-						default_header_2texts = {
+-							datacontext = "[StatesPanel.GetState]"
+-							parentanchor = hcenter
+-							blockoverride "text1" {
+-								text = "NON_LOCAL_GOODS"
+-							}
+-						}
+-
+-						widget = { size = { 5 5 } }
+-
+-						dynamicgridbox = {
+-							flipdirection = yes
+-							datamodel_wrap = 10
+-							datamodel = "[StatesPanel.AccessNonLocalGoods]"
+-
+-							item = {
+-								container = {
+-									tooltipwidget = {
+-										FancyTooltip_Goods = {}
+-									}
+-
+-									button_icon_round = {
+-										size = { 50 50 }
+-										using = select_button_sound
+-										onclick = "[InformationPanelBar.OpenGoodsStatePanel(State.Self, Goods.Self)]"
+-										onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
+-									}
+-
+-									icon = {
+-										size = { 50 50 }
+-										texture = "[Goods.GetTexture]"
+-									}
+-								}
+-							}
+-						}
++				# state_panel_modifiers_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('modifiers')]"
++				container = {
++					visible = "[InformationPanel.IsTabSelected('modifiers')]"
++					# extension hook
++					state_panel_modifiers_content_override = {}
++					state_panel_modifiers_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_content_fade
+ 					}
+ 				}
++				### END MODULAR UI PATCH
+ 			}
+ 		}
+ 
+@@ -548,33 +311,35 @@ types state_panel_types
+ 			}
+ 		}
+ 
+-		blockoverride "pin_visibility" {
+-			visible = "[ObjectsEqual(State.GetOwner, GetPlayer.Self)]"
+-		}
+-
+-		blockoverride "pin_properties" {
+-			visible = "[StatesPanel.AccessState.IsPinnedInOutliner]"
+-			onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
+-			datacontext = "[StatesPanel.AccessState]"
+-			tooltip = "UNPIN_STATE"
+-		}
+-
+-		blockoverride "unpin_properties" {
+-			visible = "[Not(StatesPanel.AccessState.IsPinnedInOutliner)]"
+-			onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
+-			datacontext = "[StatesPanel.AccessState]"
+-			tooltip = "PIN_STATE"
+-		}
+-
+-		blockoverride "goto_visibility" {
+-			visible = yes
+-		}
+-
+-		blockoverride "goto_properties" {
+-			onclick = "[State.ZoomToCapital]"
+-			tooltip = "ZOOM_TO_STATE"
+-			enabled = "[Not( State.IsZoomingToCapital )]"
+-		}
++		### BEGIN MODULAR UI PATCH
++		# blockoverride "pin_visibility" {
++		# 	visible = "[ObjectsEqual(State.GetOwner, GetPlayer.Self)]"
++		# }
++
++		# blockoverride "pin_properties" {
++		# 	visible = "[StatesPanel.AccessState.IsPinnedInOutliner]"
++		# 	onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
++		# 	datacontext = "[StatesPanel.AccessState]"
++		# 	tooltip = "UNPIN_STATE"
++		# }
++
++		# blockoverride "unpin_properties" {
++		# 	visible = "[Not(StatesPanel.AccessState.IsPinnedInOutliner)]"
++		# 	onclick = "[StatesPanel.AccessState.TogglePinInOutliner]"
++		# 	datacontext = "[StatesPanel.AccessState]"
++		# 	tooltip = "PIN_STATE"
++		# }
++
++		# blockoverride "goto_visibility" {
++		# 	visible = yes
++		# }
++
++		# blockoverride "goto_properties" {
++		# 	onclick = "[State.ZoomToCapital]"
++		# 	tooltip = "ZOOM_TO_STATE"
++		# 	enabled = "[Not( State.IsZoomingToCapital )]"
++		# }
++		### END MODULAR UI PATCH
+ 	}
+ 
+ 	type state_panel_overview_content = flowcontainer {
+@@ -1493,8 +1258,6 @@ types state_panel_types
+ 	}
+ 
+ 	type state_panel_population_content = flowcontainer {
+-		visible = "[InformationPanel.IsTabSelected('population')]"
+-		using = default_content_fade
+ 		direction = vertical
+ 		using = default_list_position
+ 		margin_top = 10
+@@ -3010,6 +2773,357 @@ types state_panel_types
+ 			}
+ 		}
+ 	}
++
++	# Vanilla code refactored out of states_panel.gui type state_panel {}
++	type state_panel_local_goods_content = flowcontainer {
++		parentanchor = hcenter
++		direction = vertical
++
++		flowcontainer = {
++			using = default_list_position
++			margin = { 0 5 }
++			margin_top = 10
++
++			sort_button = {
++				size = { 55 20 }
++				button = {
++					texture = "gfx/interface/buttons/sort_button_icons/sort_icon_good.dds"
++					size = { 25 25 }
++					parentanchor = center
++					alwaystransparent = yes
++				}
++
++				onclick = "[StatesPanel.Sort('name')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "concept_good_production"
++				tooltip = "concept_good_production"
++				size = { 55 20 }
++
++				onclick = "[StatesPanel.Sort('production')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "concept_good_consumption"
++				tooltip = "concept_good_consumption"
++				size = { 60 20 }
++				margin_right = 7
++
++				onclick = "[StatesPanel.Sort('consumption')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "BALANCE"
++				size = { 90 20 }
++				margin_right = 7
++
++				onclick = "[StatesPanel.Sort('balance')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "concept_local_price"
++				size = { 100 20 }
++
++				onclick = "[StatesPanel.Sort('state_price_relative_to_base')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "concept_market_price"
++				tooltip = "concept_market_price"
++				size = { 100 20 }
++
++				onclick = "[StatesPanel.Sort('market_price_relative_to_base')]"
++			}
++
++			sort_button = {
++				align = hcenter|nobaseline
++				text = "PRICE_DIFFERENCE"
++				tooltip = "PRICE_DIFFERENCE"
++				size = { 80 20 }
++
++				onclick = "[StatesPanel.Sort('price_difference')]"
++			}
++		}
++
++		flowcontainer = {
++			datamodel = "[StatesPanel.AccessLocalGoods]"
++			direction = vertical
++			parentanchor = hcenter
++
++			item = {
++				button = {
++					size = { @panel_width 50 }
++					using = default_button
++					onclick = "[InformationPanelBar.OpenGoodsStatePanel(State.Self, Goods.Self)]"
++					using = select_button_sound
++					onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
++
++					block "tooltip" {
++					}
++
++					flowcontainer = {
++						parentanchor = vcenter
++						widgetanchor = vcenter
++
++						using = goods_list_item
++
++						textbox = {
++							align = right|nobaseline
++							text = "[Goods.GetStateProductionWithTooltip|Dv]"
++							size = { 55 40 }
++							margin_right = 10
++							parentanchor = vcenter
++							alpha = "[TransparentIfZero(Goods.GetStateProduction)]"
++						}
++
++						vertical_divider = {}
++
++						textbox = {
++							align = right|nobaseline
++							text = "[Goods.GetStateConsumptionWithTooltip|Dv]"
++							size = { 60 40 }
++							margin_right = 10
++							parentanchor = vcenter
++							alpha = "[TransparentIfZero(Goods.GetStateConsumption)]"
++						}
++
++						vertical_divider = {}
++
++						flowcontainer = {
++							direction = vertical
++							minimumsize = { 90 52 }
++							margin_top = 10
++							spacing = 5
++							tooltip = "STATE_GOODS_BALANCE_TOOLTIP"
++
++							textbox = {
++								visible = "[GreaterThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
++								align = right|nobaseline
++								text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_GOLD"
++								autoresize = yes
++								margin_right = 15
++								parentanchor = right
++							}
++
++							textbox = {
++								visible = "[EqualTo_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
++								align = hcenter|nobaseline
++								text = "GOODS_LOCAL_PRICE_PANEL_BALANCE"
++								autoresize = yes
++								parentanchor = hcenter
++							}
++
++							textbox = {
++								visible = "[LessThan_int32(FixedPointToInt(Goods.GetStateProductionConsumptionDiff), '(int32)0')]"
++								align = left|nobaseline
++								text = "GOODS_LOCAL_PRICE_PANEL_BALANCE_BLUE"
++								autoresize = yes
++								margin_left = 15
++								parentanchor = left
++							}
++
++							double_direction_progressbar_gold = {
++								size = { 60 6 }
++								parentanchor = hcenter
++
++								blockoverride "negative_min_max_values" {
++									min = "[Negate_float(FixedPointToFloat(Goods.GetState.GetMaxImbalanceScaledByBasePrice))]"
++									max = 0
++								}
++
++								blockoverride "positive_min_max_values" {
++									min = 0
++									max = "[FixedPointToFloat(Goods.GetState.GetMaxImbalanceScaledByBasePrice)]"
++								}
++
++								blockoverride "value_left" {
++									value = "[FixedPointToInt(Multiply_CFixedPoint(Goods.GetStateProductionConsumptionDiff, Goods.GetBasePrice))]"
++								}
++								blockoverride "value_right" {
++									value = "[FixedPointToInt(Multiply_CFixedPoint(Goods.GetStateProductionConsumptionDiff, Goods.GetBasePrice))]"
++								}
++							}
++						}
++
++						vertical_divider = {}
++
++						container = {
++							tooltip = "[Goods.GetStatePriceDesc]"
++							minimumsize = { 100 -1 }
++							parentanchor = vcenter
++
++							flowcontainer = {
++								spacing = 5
++								direction = vertical
++								parentanchor = hcenter
++
++								textbox = {
++									text = "GOODS_LOCAL_PRICE_INFO"
++									align = hcenter|nobaseline
++									autoresize = yes
++									parentanchor = hcenter
++								}
++
++								double_direction_progressbar_gold = {
++									visible = no
++									size = { 60 6 }
++									parentanchor = hcenter
++
++									blockoverride "negative_min_max_values" {
++										min = -0.75
++										max = 0
++									}
++
++									blockoverride "positive_min_max_values" {
++										min = 0
++										max = 0.75
++									}
++									
++									blockoverride "value_left" {
++										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice))]"
++									}
++									blockoverride "value_right" {
++										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice))]"
++									}
++								}
++							}
++						}
++
++						vertical_divider = {}
++
++						container = {
++							using = market_price_tooltip_with_graph
++							minimumsize = { 100 -1 }
++							parentanchor = vcenter
++
++							flowcontainer = {
++								spacing = 5
++								direction = vertical
++								parentanchor = hcenter
++
++								textbox = {
++									visible = "[Not(Goods.IsLocal)]"
++									raw_text = "@money![Goods.GetMarketPrice|0v] [Goods.GetCompareIconAgainstBasePriceNoFormatting( Goods.GetMarketPrice )]"
++									align = hcenter|nobaseline
++									autoresize = yes
++									parentanchor = hcenter
++								}
++
++								textbox = {
++									visible = "[Goods.IsLocal]"
++									alpha = "[TransparentIfTrue(Goods.IsLocal)]"
++									align = hcenter|nobaseline
++									autoresize = yes
++									parentanchor = hcenter
++									text = "NOT_AVAILABLE"
++									tooltip = "concept_local_good_desc"
++								}
++
++								double_direction_progressbar_gold = {
++									visible = no
++									size = { 60 6 }
++									parentanchor = hcenter
++
++									blockoverride "negative_min_max_values" {
++										min = -0.75
++										max = 0
++									}
++
++									blockoverride "positive_min_max_values" {
++										min = 0
++										max = 0.75
++									}
++									
++									blockoverride "value_left" {
++										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
++									}
++									blockoverride "value_right" {
++										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
++									}
++								}
++							}
++						}
++
++						vertical_divider = {}
++						
++						widget = {
++							size = { 70 40 }
++							parentanchor = vcenter
++							
++							textbox = {
++								visible = "[Not(Goods.IsLocal)]"
++								align = right|nobaseline
++								text = "[Goods.GetStateToMarketPriceDiff|%0=-]"
++								size = { 70 40 }
++								margin_right = 10
++								tooltip = "STATE_TO_MARKET_PRICE_DIFF_TOOLTIP"
++							}
++
++							textbox = {
++								visible = "[Goods.IsLocal]"
++								alpha = "[TransparentIfTrue(Goods.IsLocal)]"
++								align = right|nobaseline
++								text = "NOT_AVAILABLE"
++								tooltip = "concept_local_good_desc"	
++								size = { 70 40 }
++								margin_right = 10
++							}
++						}
++					}
++				}
++			}
++		}
++
++
++		flowcontainer = {
++			direction = vertical
++			visible = "[Not(IsDataModelEmpty(StatesPanel.AccessNonLocalGoods))]"
++
++			widget = { size = { 20 20 } }
++
++			default_header_2texts = {
++				datacontext = "[StatesPanel.GetState]"
++				parentanchor = hcenter
++				blockoverride "text1" {
++					text = "NON_LOCAL_GOODS"
++				}
++			}
++
++			widget = { size = { 5 5 } }
++
++			dynamicgridbox = {
++				flipdirection = yes
++				datamodel_wrap = 10
++				datamodel = "[StatesPanel.AccessNonLocalGoods]"
++
++				item = {
++					container = {
++						tooltipwidget = {
++							FancyTooltip_Goods = {}
++						}
++
++						button_icon_round = {
++							size = { 50 50 }
++							using = select_button_sound
++							onclick = "[InformationPanelBar.OpenGoodsStatePanel(State.Self, Goods.Self)]"
++							onrightclick = "[RightClickMenuManager.ShowForGoods(Goods.AccessSelf)]"
++						}
++
++						icon = {
++							size = { 50 50 }
++							texture = "[Goods.GetTexture]"
++						}
++					}
++				}
++			}
++		}
++	}
+ }
+ 
+ types information_panels_types

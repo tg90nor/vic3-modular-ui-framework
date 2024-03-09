@@ -1,34 +1,33 @@
-#positions for sidepanel buttons
-#(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
+### BEGIN MODULAR UI PATCH
 @big_button_height = 50
 @small_button_height = 40
 @spacing_widget_height = 20
+@mui_spacing_widget_position = @[maplist_position+small_button_height]
+@more_spreadsheets_position = @[mui_spacing_widget_position+spacing_widget_height]
+@cheat_menu_position = @[more_spreadsheets_position+small_button_height]
+@victoria_universalis_iv_position = @[cheat_menu_position+small_button_height]
+### END MODULAR UI PATCH
 
-@politics_position = 0
-@budget_position = @[1*big_button_height]
-@buildings_position = @[2*big_button_height]
-@trade_position = @[3*big_button_height]
-@military_position = @[4*big_button_height]
-@spacing_widget_1_position = @[5*big_button_height]
+#positions for sidepanel buttons
+#(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
+@budget_position = 50
+@buildings_position = 100
+@trade_position = 150
+@military_position = 200
 
-@section_2_position = @[spacing_widget_1_position+spacing_widget_height]
-@diplomatic_position = @section_2_position
-@technology_position = @[1*small_button_height+section_2_position]
-@culture_position = @[2*small_button_height+section_2_position]
-@population_position = @[3*small_button_height+section_2_position]
-@journal_position = @[4*small_button_height+section_2_position]
-@companies_position = @[5*small_button_height+section_2_position]
-@spacing_widget_2_position = @[6*small_button_height+section_2_position]
+@spacing_widget_1_position = 250
+@spacing_widget_size = 20
 
-@section_3_position = @[spacing_widget_2_position+spacing_widget_height]
-@outliner_position = @section_3_position
-@spacing_widget_3_position = @[1*small_button_height+section_3_position]
+@diplomatic_position = 270
+@technology_position = 310
+@culture_position = 350
+@population_position = 390
+@journal_position = 430
+@companies_position = 470
 
-@section_4_position = @[spacing_widget_3_position+spacing_widget_height]
-@maplist_position = @section_4_position
-#positions for mod buttons:
-@more_spreadsheets_position = @[1*small_button_height+section_4_position]
-@cheat_menu_position = @[2*small_button_height+section_4_position]
+@spacing_widget_2_position = 510
+
+@maplist_position = 530
 
 types information_panel_bar_types {
 	type information_panel_bar = widget {
@@ -142,9 +141,24 @@ types information_panel_bar_types {
 						onclick = "[InformationPanelBar.OpenPanelCycleTabs('politics', 'default|interest_groups|laws|institutions')]"
 						onclick = "[GetVariableSystem.Clear('politics_overview_exile_pool')]"
 
+						### DEFAULT LAW ENACTMENT PROGRESS
 						animated_progresspie = {
+							visible = "[Not(LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25'))]"
 							parentanchor = center
 							texture = "gfx/interface/main_hud/sidebar_progress.dds"
+							size = { 100% 100% }
+							framesize = { 100 100 }
+							frame = 2
+							datacontext = "[GetPlayer.GetLawBeingEnacted]"
+							value = "[FixedPointToFloat(GetPlayer.GetLawEnactmentProgress)]"
+							alwaystransparent = yes
+						}
+
+						### IF ILLEGITMATE GOVERNMENT - RED PROGRESS
+						animated_progresspie = {
+							visible = "[LessThan_int32(GetPlayer.GetGovernmentLegitimacy, '(int32)25')]"
+							parentanchor = center
+							texture = "gfx/interface/main_hud/sidebar_progress_red.dds"
 							size = { 100% 100% }
 							framesize = { 100 100 }
 							frame = 2
@@ -310,9 +324,11 @@ types information_panel_bar_types {
 
 				### SECONDARY BUTTONS
 
-				#spacing widget needed to prevent you from clicking on the map
-				sidebar_spacing_widget = {
+				#widget needed to prevent you from clicking on the map
+				widget = {
+					using = clickthrough_blocker
 					position = { 0 @spacing_widget_1_position }
+					size = { 100% @spacing_widget_size }
 				}
 
 				### DIPLOMATIC
@@ -418,7 +434,7 @@ types information_panel_bar_types {
 					tooltip = "BUTTON_TECHNOLOGY"
 					input_action = "open_technology"
 				}
-
+				
 				### COMPANIES
 				sidebar_label_button_small = {
 					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
@@ -456,7 +472,7 @@ types information_panel_bar_types {
 					position = { 0 @companies_position }
 					tooltip = "BUTTON_COMPANIES_OVERVIEW"
 					input_action = "open_companies"
-				}
+				}				
 
 				### CULTURE
 				sidebar_label_button_small = {
@@ -594,53 +610,11 @@ types information_panel_bar_types {
 					input_action = "open_journal"
 				}
 
-				### OUTLINER
-				sidebar_label_button_small = {
-					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-					position = { -100 @outliner_position }
-					blockoverride "onclick" {
-						onclick = "[InformationPanelBar.OpenPanel('outliner')]"
-						input_action = "open_outliner"
-					}
-				}
-				sidebar_label_text_small = {
-					position = { -100 @outliner_position }
-					text = "OUTLINER"
-				}
+				#widget needed to prevent you from clicking on the map
 				widget = {
-					enabled = "[GetMetaPlayer.GetPlayedOrObservedCountry.IsValid]"
-					name = "tutorial_highlight_outliner"
-					position = { 0 @outliner_position }
 					using = clickthrough_blocker
-					using = sidebar_button_size_small
-					using = selected_sidepanel_animation_small
-					blockoverride "selected_visibility" {
-						visible = "[InformationPanelBar.IsPanelOpen('outliner')]"
-					}
-					sidepanel_button_small = {
-						blockoverride "icon" {
-							texture = "gfx/interface/main_hud/outliner_btn.dds"
-						}
-						blockoverride "button_selected" {
-							visible = "[InformationPanelBar.IsPanelOpen('outliner')]"
-						}
-						onclick = "[InformationPanelBar.OpenPanel('outliner')]"
-					}
-				}
-				sidebar_tooltip_area_small = {
-					position = { 0 @outliner_position }
-					tooltip = "OUTLINER_TOOLTIP"
-					input_action = "open_outliner"
-				}
-
-				#spacing widget needed to prevent you from clicking on the map
-				sidebar_spacing_widget = {
 					position = { 0 @spacing_widget_2_position }
-				}
-
-				#spacing widget needed to prevent you from clicking on the map
-				sidebar_spacing_widget = {
-					position = { 0 @spacing_widget_3_position }
+					size = { 100% @spacing_widget_size }
 				}
 
 				### MAP LIST
@@ -652,10 +626,12 @@ types information_panel_bar_types {
 						input_action = map_list
 					}
 				}
+
 				sidebar_label_text_small = {
 					position = { -100 @maplist_position }
 					text = "MAP_LIST"
 				}
+
 				widget = {
 					position = { 0 @maplist_position }
 					using = clickthrough_blocker
@@ -674,16 +650,17 @@ types information_panel_bar_types {
 						onclick = "[MapListPanelManager.ToggleCurrentPanel]"
 					}
 				}
+
 				sidebar_tooltip_area_small = {
 					position = { 0 @maplist_position }
 					tooltip = "MAP_LIST_TOOLTIP"
 					input_action = map_list
 				}
-
-				###
-				### MODS
-				###
-
+				### BEGIN MODULAR UI PATCH
+				sidebar_spacing_widget = {
+					position = { 0 @mui_spacing_widget_position }
+					size = { 100% @spacing_widget_height }
+				}
 				### Mod: More Spreadsheets
 				sidebar_mod_placeholder = {
 					position = { 0 @more_spreadsheets_position }
@@ -691,14 +668,21 @@ types information_panel_bar_types {
 				more_spreadsheets_sidebar_button = {
 					position = { 0 @more_spreadsheets_position }
 				}
-
-				### Mod: Glitterhoofs Cheat Menu (or other compatible cheat menu mods)
+				### Mod: Cheat Menu
 				sidebar_mod_placeholder = {
 					position = { 0 @cheat_menu_position }
 				}
 				cheat_menu_sidebar_button = {
 					position = { 0 @cheat_menu_position }
 				}
+				### Mod: Victoria Universalis IV
+				sidebar_mod_placeholder = {
+					position = { 0 @victoria_universalis_iv_position }
+				}
+				victoria_universalis_iv_sidebar_button = {
+					position = { 0 @victoria_universalis_iv_position }
+				}
+				### END MODULAR UI PATCH
 			}
 		}
 	}

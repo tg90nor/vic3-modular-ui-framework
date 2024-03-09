@@ -1,0 +1,52 @@
+diff --git a/gui/information_panel_bar.v1.6.1.gui b/gui/information_panel_bar.gui
+index 9b05fbc..0a5b744 100755
+--- a/gui/information_panel_bar.v1.6.1.gui
++++ b/gui/information_panel_bar.gui
+@@ -1,3 +1,13 @@
++### BEGIN MODULAR UI PATCH
++@big_button_height = 50
++@small_button_height = 40
++@spacing_widget_height = 20
++@mui_spacing_widget_position = @[maplist_position+small_button_height]
++@more_spreadsheets_position = @[mui_spacing_widget_position+spacing_widget_height]
++@cheat_menu_position = @[more_spreadsheets_position+small_button_height]
++@victoria_universalis_iv_position = @[cheat_menu_position+small_button_height]
++### END MODULAR UI PATCH
++
+ #positions for sidepanel buttons
+ #(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
+ @budget_position = 50
+@@ -646,6 +656,33 @@ types information_panel_bar_types {
+ 					tooltip = "MAP_LIST_TOOLTIP"
+ 					input_action = map_list
+ 				}
++				### BEGIN MODULAR UI PATCH
++				sidebar_spacing_widget = {
++					position = { 0 @mui_spacing_widget_position }
++					size = { 100% @spacing_widget_height }
++				}
++				### Mod: More Spreadsheets
++				sidebar_mod_placeholder = {
++					position = { 0 @more_spreadsheets_position }
++				}
++				more_spreadsheets_sidebar_button = {
++					position = { 0 @more_spreadsheets_position }
++				}
++				### Mod: Cheat Menu
++				sidebar_mod_placeholder = {
++					position = { 0 @cheat_menu_position }
++				}
++				cheat_menu_sidebar_button = {
++					position = { 0 @cheat_menu_position }
++				}
++				### Mod: Victoria Universalis IV
++				sidebar_mod_placeholder = {
++					position = { 0 @victoria_universalis_iv_position }
++				}
++				victoria_universalis_iv_sidebar_button = {
++					position = { 0 @victoria_universalis_iv_position }
++				}
++				### END MODULAR UI PATCH
+ 			}
+ 		}
+ 	}

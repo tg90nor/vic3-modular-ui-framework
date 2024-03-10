@@ -1,13 +1,3 @@
-### BEGIN MODULAR UI PATCH
-@big_button_height = 50
-@small_button_height = 40
-@spacing_widget_height = 20
-@mui_spacing_widget_position = @[maplist_position+small_button_height]
-@more_spreadsheets_position = @[mui_spacing_widget_position+spacing_widget_height]
-@cheat_menu_position = @[more_spreadsheets_position+small_button_height]
-@victoria_universalis_iv_position = @[cheat_menu_position+small_button_height]
-### END MODULAR UI PATCH
-
 #positions for sidepanel buttons
 #(they cant be in flowcontainer because of the way the label buttons is set up to scale with the longest localized text)
 @budget_position = 50
@@ -28,6 +18,16 @@
 @spacing_widget_2_position = 510
 
 @maplist_position = 530
+
+### BEGIN MODULAR UI PATCH
+@big_button_height = 50
+@small_button_height = 40
+@spacing_widget_height = 20
+@mui_spacing_widget_position = @[maplist_position+small_button_height]
+@more_spreadsheets_position = @[mui_spacing_widget_position+spacing_widget_height]
+@cheat_menu_position = @[more_spreadsheets_position+small_button_height]
+@victoria_universalis_iv_position = @[cheat_menu_position+small_button_height]
+### END MODULAR UI PATCH
 
 types information_panel_bar_types {
 	type information_panel_bar = widget {

@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+source "$SCRIPT_DIR/functions.sh"
+MOD_DIR="$(pwd)"
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 <relative_file_path_from_game_root>" >&2
+    echo "Example: $0 common/defines/00_defines.txt" >&2
+    exit 1
+fi
+
+RELATIVE_FILE_PATH="$1"
+
+GAME_INSTALL_PATH=$(game_install_dir "$VIC3_APP_ID")
+
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to find Victoria 3 installation path. Exiting." >&2
+    exit 1
+fi
+
+SOURCE_FILE="$GAME_INSTALL_PATH/game/$RELATIVE_FILE_PATH"
+DEST_FILE="$MOD_DIR/$RELATIVE_FILE_PATH"
+DEST_DIR="$(dirname "$DEST_FILE")"
+
+# Check if source file exists
+if [ ! -f "$SOURCE_FILE" ]; then
+    echo "Error: Source file not found in game directory: '$SOURCE_FILE'" >&2
+    exit 1
+fi
+
+# Create destination directory if it doesn't exist
+if [ ! -d "$DEST_DIR" ]; then
+    mkdir -p "$DEST_DIR"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to create destination directory." >&2
+        exit 1
+    fi
+fi
+
+cp -v "$SOURCE_FILE" "$DEST_FILE"
+
+if [ $? -ne 0 ]; then
+    echo "Error: Failed to copy file." >&2
+    exit 1
+fi
+
+exit 0

@@ -1,11 +1,9 @@
-diff --git a/gui/states_panel.v1.6.1.gui b/gui/states_panel.gui
-index d5b31c7..049f86f 100755
---- a/gui/states_panel.v1.6.1.gui
+--- a/gui/states_panel.gui.1.8.7
 +++ b/gui/states_panel.gui
-@@ -11,28 +11,82 @@
+@@ -337,28 +337,80 @@
+ 		}
+ 	}
  
- types state_panel_types
- {
 -	type states_panel =  default_block_window_two_lines {
 +	type states_panel =  default_block_window { ### MODULAR UI PATCH
  		name = "states_panel"
@@ -21,11 +19,21 @@ index d5b31c7..049f86f 100755
 +				blockoverride "window_header_name"{
 +					raw_text = "#BOLD [State.GetName]#!"
 +				}
-+
+ 
+-		blockoverride "window_header_name_line_two" {
+-			text = "STATE_IN_COUNTRY_SUBTITLE"
+-		}
 +				blockoverride "window_header_name_line_two" {
 +					text = "STATE_IN_COUNTRY_SUBTITLE"
 +				}
-+
+ 
+-		blockoverride "goto_button" {
+-			button_icon_goto = {
+-				datacontext = "[StatesPanel.GetState.GetCountry]"
+-				size = { 30 30 }
+-				onclick = "[InformationPanelBar.OpenCountryPanel(StatesPanel.GetState.GetCountry)]"
+-				tooltip = "GO_TO_BUTTON_COUNTRY"
+-				input_action = "go_to_details"
 +				blockoverride "highlight_name" {
 +					name = "tutorial_highlight_second_header"
 +				}
@@ -82,25 +90,13 @@ index d5b31c7..049f86f 100755
 +					tooltip = "ZOOM_TO_STATE"
 +					enabled = "[Not( State.IsZoomingToCapital )]"
 +				}
- 
--		blockoverride "window_header_name_line_two" {
--			text = "STATE_IN_COUNTRY_SUBTITLE"
--		}
- 
--		blockoverride "goto_button" {
--			button_icon_goto = {
--				datacontext = "[StatesPanel.GetState.GetCountry]"
--				size = { 30 30 }
--				onclick = "[InformationPanelBar.OpenCountryPanel(StatesPanel.GetState.GetCountry)]"
--				tooltip = "GO_TO_BUTTON_COUNTRY"
--				input_action = "go_to_details"
  			}
  		}
 +		### END MODULAR UI PATCH
- 
- 		blockoverride "fixed_top" {
- 			tab_buttons = {
-@@ -149,391 +203,100 @@ types state_panel_types
+ 		
+ 		blockoverride "edit_visibility" {
+ 			visible = "[StatesPanel.GetState.GetCountry.IsPlayer]"
+@@ -487,391 +539,100 @@
  			}
  		}
  
@@ -565,7 +561,7 @@ index d5b31c7..049f86f 100755
  			}
  		}
  
-@@ -548,33 +311,35 @@ types state_panel_types
+@@ -886,33 +647,35 @@
  			}
  		}
  
@@ -628,7 +624,7 @@ index d5b31c7..049f86f 100755
  	}
  
  	type state_panel_overview_content = flowcontainer {
-@@ -1493,8 +1258,6 @@ types state_panel_types
+@@ -1909,8 +1672,6 @@
  	}
  
  	type state_panel_population_content = flowcontainer {
@@ -637,10 +633,13 @@ index d5b31c7..049f86f 100755
  		direction = vertical
  		using = default_list_position
  		margin_top = 10
-@@ -3010,6 +2773,357 @@ types state_panel_types
- 			}
- 		}
- 	}
+@@ -3548,6 +3309,357 @@
+ 						}
+ 					}
+ 				}
++			}
++		}
++	}
 +
 +	# Vanilla code refactored out of states_panel.gui type state_panel {}
 +	type state_panel_local_goods_content = flowcontainer {
@@ -989,9 +988,6 @@ index d5b31c7..049f86f 100755
 +						}
 +					}
 +				}
-+			}
-+		}
-+	}
- }
- 
- types information_panels_types
+ 			}
+ 		}
+ 	}

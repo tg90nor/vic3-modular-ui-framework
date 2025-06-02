@@ -1,10 +1,8 @@
-diff --git a/gui/market_panel.v1.6.1.gui b/gui/market_panel.gui
-index e5762ce..cfe019d 100755
---- a/gui/market_panel.v1.6.1.gui
+--- a/gui/market_panel.gui.1.8.7
 +++ b/gui/market_panel.gui
-@@ -32,10 +32,52 @@ types market_panel
+@@ -32,10 +32,52 @@
  		
- 		datacontext = "[MarketPanel.AccessMarket]"
+ 		datacontext = "[MarketPanel.GetMarket]"
  		
 -		blockoverride "window_header_name"
 -		{
@@ -58,39 +56,15 @@ index e5762ce..cfe019d 100755
  		
  		blockoverride "fixed_top"
  		{
-@@ -88,7 +130,7 @@ types market_panel
- 					text = "MARKET_PANEL_TRADE_SUGGESTIONS_TAB_LABEL"
- 				}
- 				blockoverride "third_button_tooltip" {
--					tooltip = "MARKET_PANEL_STATES_TAB_LABEL" 
-+					tooltip = "MARKET_PANEL_TRADE_SUGGESTIONS_TAB_LABEL" ### MODULAR UI PATCH
- 				}
- 				blockoverride "third_button_click" {
- 					onclick = "[InformationPanel.SelectTab('trade_suggestions')]"
-@@ -106,6 +148,11 @@ types market_panel
- 				blockoverride "fourth_button" {
- 					text = "MARKET_PANEL_STATES_TAB_LABEL"
- 				}
-+				### BEGIN MODULAR UI PATCH
-+				blockoverride "fourth_button_tooltip" {
-+					tooltip = "MARKET_PANEL_STATES_TAB_LABEL"
-+				}
-+				### END MODULAR UI PATCH
- 				blockoverride "fourth_button_click" {
- 					onclick = "[InformationPanel.SelectTab('states')]"
- 				}
-@@ -448,55 +495,57 @@ types market_panel
+@@ -634,25 +676,43 @@
  			container = {
  				parentanchor = hcenter
  				
 -				market_panel_details_content = {
 +				### BEGIN MODULAR UI PATCH
-+				# market_panel_details_content = {
-+				# 	visible = "[InformationPanel.IsTabSelected('default')]"
 +				container = {
  					visible = "[InformationPanel.IsTabSelected('default')]"
 -					using = default_fade_in_out
-+					# extension hook
 +					market_panel_details_content_override = {}
 +					market_panel_details_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -99,12 +73,9 @@ index e5762ce..cfe019d 100755
  				}
  
 -				market_panel_trade_routes_content = {
-+				# market_panel_trade_routes_content = {
-+				# 	visible = "[InformationPanel.IsTabSelected('trade_routes')]"
 +				container = {
  					visible = "[InformationPanel.IsTabSelected('trade_routes')]"
 -					using = default_fade_in_out
-+					# extension hook
 +					market_panel_trade_routes_content_override = {}
 +					market_panel_trade_routes_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -112,27 +83,21 @@ index e5762ce..cfe019d 100755
 +					}
  				}
  
--				market_panel_trade_routes_trade_suggestions = {
-+				# market_panel_trade_routes_trade_suggestions = {
-+				# 	visible = "[InformationPanel.IsTabSelected('trade_suggestions')]"
+-				market_panel_food_security_content = {
 +				container = {
- 					visible = "[InformationPanel.IsTabSelected('trade_suggestions')]"
+ 					visible = "[InformationPanel.IsTabSelected('food_security')]"
 -					using = default_fade_in_out
-+					# extension hook
-+					market_panel_trade_routes_trade_suggestions_override = {}
-+					market_panel_trade_routes_trade_suggestions = {
++					market_panel_food_security_content_override = {}
++					market_panel_food_security_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
 +						using = default_fade_in_out
 +					}
  				}
  
 -				market_panel_states_content = {
-+				# market_panel_states_content = {
-+				# 	visible = "[InformationPanel.IsTabSelected('states')]"
 +				container = {
  					visible = "[InformationPanel.IsTabSelected('states')]"
 -					using = default_fade_in_out
-+					# extension hook
 +					market_panel_states_content_override = {}
 +					market_panel_states_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -142,34 +107,4 @@ index e5762ce..cfe019d 100755
 +				### END MODULAR UI PATCH
  			}
  		}
--
--		blockoverride "pin_visibility" {
--			visible = yes
--		}
--
--		blockoverride "pin_properties" {
--			visible = "[MarketPanel.AccessMarket.IsPinnedInOutliner]"
--			onclick = "[MarketPanel.AccessMarket.TogglePinInOutliner]"
--			datacontext = "[MarketPanel.AccessMarket]"
--			tooltip = "UNPIN_MARKET"
--		}
--
--		blockoverride "unpin_properties" {
--			visible = "[Not(MarketPanel.AccessMarket.IsPinnedInOutliner)]"
--			onclick = "[MarketPanel.AccessMarket.TogglePinInOutliner]"
--			datacontext = "[MarketPanel.AccessMarket]"
--			tooltip = "PIN_MARKET"
--		}
--
--		blockoverride "goto_visibility" {
--			visible = yes
--		}
--
--		blockoverride "goto_properties" {
--			onclick = "[Market.AccessMarketCapital.ZoomToCapital]"
--			tooltip = "ZOOM_TO_MARKET_CAPITAL"
--			enabled = "[Not( Market.AccessMarketCapital.IsZoomingToCapital )]"
--		}
- 	}
  
- 	type market_panel_details_content = container {

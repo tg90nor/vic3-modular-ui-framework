@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+PYTHON_SCRIPT_PATH="${SCRIPT_DIR}/mui.py"
+
+direnv exec "${SCRIPT_DIR}" python "${PYTHON_SCRIPT_PATH}" "$@"
+
+exit $?
+

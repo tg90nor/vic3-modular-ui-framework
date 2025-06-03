@@ -1,4 +1,4 @@
---- a/gui/market_panel.gui.1.8.7
+--- a/vanilla_files/1.8.7/gui/market_panel.gui
 +++ b/gui/market_panel.gui
 @@ -32,10 +32,52 @@
  		

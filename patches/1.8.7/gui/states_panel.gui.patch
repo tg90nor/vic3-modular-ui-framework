@@ -1,4 +1,4 @@
---- a/gui/states_panel.gui.1.8.7
+--- a/vanilla_files/1.8.7/gui/states_panel.gui
 +++ b/gui/states_panel.gui
 @@ -337,28 +337,80 @@
  		}

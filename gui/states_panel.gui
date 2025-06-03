@@ -3523,7 +3523,7 @@ types state_panel_types
 										min = 0
 										max = 0.75
 									}
-									
+
 									blockoverride "value_left" {
 										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetStatePrice))]"
 									}
@@ -3578,7 +3578,7 @@ types state_panel_types
 										min = 0
 										max = 0.75
 									}
-									
+
 									blockoverride "value_left" {
 										value = "[FixedPointToFloat(Goods.GetPercentageDeltaAgainstBasePrice(Goods.GetMarketPrice))]"
 									}
@@ -3590,11 +3590,11 @@ types state_panel_types
 						}
 
 						vertical_divider = {}
-						
+
 						widget = {
 							size = { 70 40 }
 							parentanchor = vcenter
-							
+
 							textbox = {
 								visible = "[Not(Goods.IsLocal)]"
 								align = right|nobaseline
@@ -3609,7 +3609,7 @@ types state_panel_types
 								alpha = "[TransparentIfTrue(Goods.IsLocal)]"
 								align = right|nobaseline
 								text = "NOT_AVAILABLE"
-								tooltip = "concept_local_good_desc"	
+								tooltip = "concept_local_good_desc"
 								size = { 70 40 }
 								margin_right = 10
 							}

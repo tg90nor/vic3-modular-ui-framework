@@ -46,7 +46,7 @@ def load_config(config_file_name: str = CONFIG_FILE_NAME) -> dict:
     if not config_path.exists():
         click.echo(f"Configuration file '{config_file_name}' not found.", err=True)
         if config_file_name == CONFIG_FILE_NAME:
-             click.echo(f"Run 'mui-sync init' to create one for the framework.")
+             click.echo(f"Run 'mui.py init' to create one for the framework.")
         elif config_file_name == DEPENDENT_MOD_CONFIG_FILE_NAME:
             click.echo(f"Ensure this command is run from a dependent mod's root directory and '{DEPENDENT_MOD_CONFIG_FILE_NAME}' exists.")
         raise click.exceptions.Exit(1)
@@ -221,18 +221,18 @@ def ensure_game_info(config: dict, check_version: bool = True) -> tuple[Path, st
 
     if not game_content_dir_str:
         click.echo("Error: Game content directory not found in main mui_config.json. "
-                   "Please run 'mui-sync locate-game' in the framework directory first.", err=True)
+                   "Please run 'mui.py locate-game' in the framework directory first.", err=True)
         raise click.exceptions.Exit(1)
     
     game_content_dir = Path(game_content_dir_str)
     if not game_content_dir.is_dir(): 
         click.echo(f"Error: Configured game content directory '{game_content_dir}' from main mui_config.json does not exist or is not a directory. "
-                   "Please re-run 'mui-sync locate-game' in the framework directory.", err=True)
+                   "Please re-run 'mui.py locate-game' in the framework directory.", err=True)
         raise click.exceptions.Exit(1)
     
     if check_version and not game_version:
         click.echo("Error: Game version not found in main mui_config.json. "
-                   "Please run 'mui-sync locate-game' in the framework directory first.", err=True)
+                   "Please run 'mui.py locate-game' in the framework directory first.", err=True)
         raise click.exceptions.Exit(1)
         
     return game_content_dir, game_version
@@ -251,7 +251,7 @@ def check_git_availability():
 @click.group()
 def cli():
     """
-    Modular UI Synchronizer (mui-sync) for Victoria 3.
+    Modular UI Synchronizer (mui.py) for Victoria 3.
     Helps manage UI framework files, patches, and distribution to dependent mods.
     This tool should typically be run from the root of the vic3-modular-ui-framework repository,
     EXCEPT for the 'distribute' command, which is run from a dependent mod's directory.
@@ -260,7 +260,7 @@ def cli():
 
 @cli.command()
 def init():
-    """Initializes mui-sync in the current directory (framework's root).
+    """Initializes mui.py in the current directory (framework's root).
     Creates mui_config.json and necessary directories.
     """
     config_path = Path(CONFIG_FILE_NAME)
@@ -290,7 +290,7 @@ def init():
 
         click.echo("Initialization complete. Please review and customize mui_config.json.")
         click.echo("Ensure 'tracked_files' in mui_config.json are paths relative to the repository root (e.g., 'gui/your_file.gui').")
-        click.echo("Next, try 'mui-sync locate-game' to find your Victoria 3 installation.")
+        click.echo("Next, try 'mui.py locate-game' to find your Victoria 3 installation.")
 
     except Exception as e:
         click.echo(f"Error during initialization: {e}", err=True)

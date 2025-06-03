@@ -137,31 +137,20 @@ The `mui` tool itself (`mui.py`) is located in the `tools/` directory of the `vi
 
 2.  **Set up Direnv (Recommended):**
 
-    -   Allow direnv `.envrc` in `vic3-modular-ui-framework`:
+    -   Make sure you have `direnv` and `pipenv` installed.
+    -   Allow direnv `.envrc` in repo and `tools` directories:
 
         ```bash
         # in vic3-modular-ui-framework directory
         direnv allow .
+        cd tools
+        direnv allow .
+        cd ..
         ```
 
     -   This setup ensures that the `mui` command is available when you are in the framework's root directory and that `click` is installed in the environment `direnv` activates for the `tools` directory.
 
-4.  **Install Dependencies:**
-
-    -   The primary Python dependency is `click`. If you are using `direnv` with the `Pipfile` in the `tools` directory:
-
-        ```bash
-        cd tools
-        # If you haven't already, and your tools/.envrc uses pipenv:
-        # pipenv install
-        # OR, if tools/.envrc just activates python3 and you want to install click globally or in a venv:
-        # pip install click
-        cd ..
-        ```
-
-    -   The `tools/mui` wrapper script will use the Python environment activated by `direnv` in the `tools` directory to run `mui.py`.
-
-5.  Initialize the Tool:
+3.  Initialize the Tool:
 
     Run this from the root of the vic3-modular-ui-framework repository:
 
@@ -179,7 +168,7 @@ The `mui` tool itself (`mui.py`) is located in the `tools/` directory of the `vi
 
     -   `gui/`: The primary working directory for your framework's modified UI files.
 
-6.  Locate Game Installation:
+4.  Locate Game Installation:
 
     Run this from the root of the vic3-modular-ui-framework repository:
 
@@ -370,7 +359,9 @@ vic3-modular-ui-framework/
 │       ├── gui/information_panel_bar.gui.patch
 │       └── ...
 ├── tools/
-│   ├── Pipfile             # Optional: For mui.py dependencies (e.g., click)
+│   ├── .envrc              # For direnv (tools directory)
+│   ├── Pipfile             # For mui.py dependencies (e.g., click)
+│   ├── Pipfile.lock        # Lock file for dependencies
 │   ├── mui                 # Bash wrapper for mui.py
 │   └── mui.py              # The Python CLI tool script
 └── vanilla_files/          # Stores fetched vanilla game files

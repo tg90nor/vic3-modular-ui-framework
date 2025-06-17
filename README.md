@@ -29,9 +29,9 @@ The sidebar is not dynamic, so any new button needs to be added to this mod.
 | market_panel_header_top_left_button | widget | 30x30 button in the top left of the header, next to the Back button. |
 | market_panel_header_bottom_left_button | widget | 30x30 button in the bottom left of the header, next to the Back button. |
 | market_panel_details_content_override | container | Replaces the default Goods tab main content. |
-| market_panel_trade_routes_content_override | container | Replaces the default Trade Routes tab main content. |
-| market_panel_trade_routes_trade_suggestions_override | container | Replaces the default Highlights tab main content. |
-| market_panel_states_content_override | container | Replaces the default Members tab main content. |
+| market_panel_world_market_trade_content_override | flowcontainer | Replaces the default World Market Trade tab main content. |
+| market_panel_food_security_content_override | flowcontainer | Replaces the default Food Security tab main content. |
+| market_panel_states_content_override | flowcontainer | Replaces the default Members tab main content. |
 
 #### States Panel
 

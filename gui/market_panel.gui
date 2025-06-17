@@ -780,6 +780,7 @@ types market_panel
 				# 	}
 				container = {
 					visible = "[InformationPanel.IsTabSelected('default')]"
+					# extension hook
 					market_panel_details_content_override = {}
 					market_panel_details_content = {
 						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -795,6 +796,7 @@ types market_panel
 				# 	visible = "[InformationPanel.IsTabSelected('world_market_trade')]"
 				container = {
 					visible = "[InformationPanel.IsTabSelected('world_market_trade')]"
+					# extension hook
 					market_panel_world_market_trade_content_override = {}
 					market_panel_world_market_trade_content = {
 						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -810,6 +812,7 @@ types market_panel
 				# 	}
 				container = {
  					visible = "[InformationPanel.IsTabSelected('food_security')]"
+					# extension hook
 					market_panel_food_security_content_override = {}
 					market_panel_food_security_content = {
 						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -829,6 +832,7 @@ types market_panel
 				# 	}
 				container = {
  					visible = "[InformationPanel.IsTabSelected('states')]"
+					# extension hook
 					market_panel_states_content_override = {}
 					market_panel_states_content = {
 						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"

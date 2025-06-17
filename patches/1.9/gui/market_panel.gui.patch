@@ -84,7 +84,7 @@
  
  		blockoverride "map_modes_button" {
  			map_modes_single_button_minimized = {
-@@ -732,112 +771,107 @@
+@@ -732,112 +771,111 @@
  			container = {
  				parentanchor = hcenter
  				
@@ -100,6 +100,7 @@
  					visible = "[InformationPanel.IsTabSelected('default')]"
 -					using = default_fade_in_out
 -
++					# extension hook
 +					market_panel_details_content_override = {}
 +					market_panel_details_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -158,6 +159,7 @@
 -								}
 -							}
 -						}
++					# extension hook
 +					market_panel_world_market_trade_content_override = {}
 +					market_panel_world_market_trade_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -190,6 +192,7 @@
 +				# 	}
 +				container = {
 + 					visible = "[InformationPanel.IsTabSelected('food_security')]"
++					# extension hook
 +					market_panel_food_security_content_override = {}
 +					market_panel_food_security_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -209,6 +212,7 @@
 +				# 	}
 +				container = {
 + 					visible = "[InformationPanel.IsTabSelected('states')]"
++					# extension hook
 +					market_panel_states_content_override = {}
 +					market_panel_states_content = {
 +						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
@@ -284,7 +288,7 @@
  	}
  
  	type market_panel_details_content = container {
-@@ -1807,6 +1841,51 @@
+@@ -1807,6 +1845,51 @@
  		}
  	}
  

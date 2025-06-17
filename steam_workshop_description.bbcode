@@ -1,0 +1,42 @@
+GUI modding framework. Contains integration hooks for modders to add UI elements in a way that is more compatible with other mods.
+
+Very much a work in progress. More extension hooks will be added.
+
+Just define one of the hooks as a type in your mods gui files and it will be shown in the game.
+[h2]Load order - for users[/h2]
+Before Modular UI Framework:
+[list]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3157211361]Glitterhoofs Cheat Menu[/url]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3163330692]Glitterhoofs Dense Market Details[/url]
+[*] [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3165542308]Automate Trade & Modular UI Framework compatch[/url]
+[/list]
+[b]Modular UI Framework[/b]
+[h2]Extension hooks list - for modders[/h2]
+More detailed list at https://github.com/tg90nor/vic3-modular-ui-framework
+[h3]Sidebar[/h3]
+The sidebar is not dynamic, so any new button needs to be added to this mod. Contact me if you want one added.
+[list]
+[*] more_spreadsheets_sidebar_button
+[*] cheat_menu_sidebar_button
+[*] victoria_universalis_iv_sidebar_button
+[/list]
+[h3]Market Panel[/h3]
+[list]
+[*] market_panel_header_top_left_button
+[*] market_panel_header_bottom_left_button
+[*] market_panel_details_content_override
+[*] market_panel_world_market_trade_content_override
+[*] market_panel_food_security_content_override
+[*] market_panel_states_content_override
+[/list]
+[h3]States Panel[/h3]
+[list]
+[*] states_panel_header_top_left_button
+[*] states_panel_header_bottom_left_button
+[*] state_panel_overview_content_override
+[*] state_panel_condensed_override
+[*] state_panel_buildings_content_override
+[*] state_panel_population_content_override
+[*] state_panel_local_goods_content_override
+[*] state_panel_modifiers_content_override
+[/list]

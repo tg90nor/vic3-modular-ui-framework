@@ -1,0 +1,338 @@
+--- a/vanilla_files/1.9/gui/market_panel.gui
++++ b/gui/market_panel.gui
+@@ -32,26 +32,65 @@
+ 		
+ 		datacontext = "[MarketPanel.GetMarket]"
+ 		
+-		blockoverride "window_header_name"
+-		{
+-			raw_text = "[LabelingHelper.CapitalizeOnlyFirst(Market.GetNameNoFormatting)]"
+-
+-			tooltipwidget = {
+-				FancyTooltip_Market = {}
+-			}
+-		}
+-
+-		blockoverride "header_texts_before" {
+-			flowcontainer = {
+-				parentanchor = vcenter
+-				margin_right = 15
+-				market_flag = {}
+-			}
+-
+-			blockoverride "header_texts_maximum_size" {
+-				maximumsize = { 332 70 } #395 - 63 (width of the flag + margin)
++		### BEGIN MODULAR UI PATCH
++		blockoverride "window_header" {
++			default_block_window_header = {
++				blockoverride "window_header_name" {
++					raw_text = "[LabelingHelper.CapitalizeOnlyFirst(Market.GetNameNoFormatting)]"
++					tooltipwidget = {
++						FancyTooltip_Market = {}
++					}
++				}
++				blockoverride "header_texts_before" {
++					flowcontainer = {
++						parentanchor = vcenter
++						margin_right = 15
++						market_flag = {}
++					}
++					blockoverride "header_texts_maximum_size" {
++						maximumsize = { 332 70 } #395 - 63 (width of the flag + margin)
++					}
++				}
++				blockoverride "top_left_button" {
++					# extension hook
++					market_panel_header_top_left_button = {
++						position = { 48 16 }
++						size = { 30 30 }
++					}
++				}
++				blockoverride "bottom_left_button" {
++					# extension hook
++					market_panel_header_bottom_left_button = {
++						position = { 48 59 }
++						size = { 30 30 }
++					}
++				}
++				blockoverride "pin_visibility" {
++					visible = yes
++				}
++				blockoverride "pin_properties" {
++					visible = "[MarketPanel.GetMarket.IsPinnedInOutliner]"
++					onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
++					datacontext = "[MarketPanel.GetMarket]"
++					tooltip = "UNPIN_MARKET"
++				}
++				blockoverride "unpin_properties" {
++					visible = "[Not(MarketPanel.GetMarket.IsPinnedInOutliner)]"
++					onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
++					datacontext = "[MarketPanel.GetMarket]"
++					tooltip = "PIN_MARKET"
++				}
++				blockoverride "goto_visibility" {
++					visible = yes
++				}
++				blockoverride "goto_properties" {
++					onclick = "[Market.AccessMarketCapital.ZoomToCapital]"
++					tooltip = "ZOOM_TO_MARKET_CAPITAL"
++					enabled = "[Not( Market.AccessMarketCapital.IsZoomingToCapital )]"
++				}
+ 			}
+ 		}
++		### END MODULAR UI PATCH
+ 
+ 		blockoverride "map_modes_button" {
+ 			map_modes_single_button_minimized = {
+@@ -732,112 +771,107 @@
+ 			container = {
+ 				parentanchor = hcenter
+ 				
+-				market_panel_details_content = {
++				### BEGIN MODULAR UI PATCH
++				# market_panel_details_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('default')]"
++				# 	state = {
++				# 		name = _show
++				# 		on_start = "[MarketPanel.GetMapModeList.SelectDefault]"
++				# 	}
++				container = {
+ 					visible = "[InformationPanel.IsTabSelected('default')]"
+-					using = default_fade_in_out
+-
++					market_panel_details_content_override = {}
++					market_panel_details_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_fade_in_out
++					}
+ 					state = {
+ 						name = _show
+ 						on_start = "[MarketPanel.GetMapModeList.SelectDefault]"
+ 					}
+ 				}
+ 
+-				flowcontainer = {
++				# market_panel_world_market_trade_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('world_market_trade')]"
++				container = {
+ 					visible = "[InformationPanel.IsTabSelected('world_market_trade')]"
+-					using = default_fade_in_out
+-					direction = vertical
+-
+-					flowcontainer = {
+-						datamodel = "[Market.AccessMarketGoods( MarketPanel.GetFilters )]"
+-						direction = vertical
+-						parentanchor = hcenter
+-						spacing = 8
+-						margin_top = 8
+-						margin_bottom = 4
+-						
+-						item = {
+-							market_world_market_goods_list_item = {}
+-						}
+-					}
+-
+-					default_header_2texts = {
+-						visible = "[GetVariableSystem.Exists( 'tariffs_show_all' )]"
+-						parentanchor = hcenter
+-
+-						blockoverride "text1" {
+-							text = "GOODS_WITHOUT_WORLD_MARKET_TRADE"
+-						}
+-					}	
+-
+-					flowcontainer = {
+-						visible = "[GetVariableSystem.Exists( 'tariffs_show_all' )]"
+-						datamodel = "[Market.AccessMarketGoods( MarketPanel.GetFilters )]"
+-						
+-						direction = vertical
+-						spacing = 8
+-						margin_top = 8
+-						margin_bottom = 4
+-						parentanchor = hcenter
+-						
+-						item = {
+-							market_world_market_goods_list_item = {
+-								blockoverride "market_world_market_goods_list_item_visibility" {
+-									visible = "[And(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)), IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
+-								}
+-							}
+-						}
++					market_panel_world_market_trade_content_override = {}
++					market_panel_world_market_trade_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_fade_in_out
+ 					}
+ 				}
+ 
+-				market_panel_food_security_content = {
+-					visible = "[InformationPanel.IsTabSelected('food_security')]"
+-					using = default_fade_in_out
+-
+-					state = {
+-						name = _show
+-						on_start = "[MarketPanel.GetMapModeList.SelectByKey('mm_global_starvation')]"
+-					}
+-				}
+-
+-				market_panel_states_content = {
+-					visible = "[InformationPanel.IsTabSelected('states')]"
+-					using = default_fade_in_out
+-
+-					state = {
+-						name = _show
+-						on_start = "[MarketPanel.GetMapModeList.SelectDefault]"
++				# market_panel_food_security_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('food_security')]"
++				# 	state = {
++				# 		name = _show
++				# 		on_start = "[MarketPanel.GetMapModeList.SelectByKey('mm_global_starvation')]"
++				# 	}
++				container = {
++ 					visible = "[InformationPanel.IsTabSelected('food_security')]"
++					market_panel_food_security_content_override = {}
++					market_panel_food_security_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_fade_in_out
++						state = {
++							name = _show
++							on_start = "[MarketPanel.GetMapModeList.SelectByKey('mm_global_starvation')]"
++						}
++					}
++ 				}
++
++				# market_panel_states_content = {
++				# 	visible = "[InformationPanel.IsTabSelected('states')]"
++				# 	state = {
++				# 		name = _show
++				# 		on_start = "[MarketPanel.GetMapModeList.SelectDefault]"
++				# 	}
++				container = {
++ 					visible = "[InformationPanel.IsTabSelected('states')]"
++					market_panel_states_content_override = {}
++					market_panel_states_content = {
++						visible = "[EqualTo_int32(PdxGuiWidget.AccessParent.GetChildrenCount, '(int32)1')]"
++						using = default_fade_in_out
++						state = {
++							name = _show
++							on_start = "[MarketPanel.GetMapModeList.SelectDefault]"
++						}
+ 					}
+-				}
++ 				}
++				### END MODULAR UI PATCH
+ 			}
+ 		}
+-
+-		blockoverride "pin_visibility" {
+-			visible = yes
+-		}
+-
+-		blockoverride "pin_properties" {
+-			visible = "[MarketPanel.GetMarket.IsPinnedInOutliner]"
+-			onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
+-			datacontext = "[MarketPanel.GetMarket]"
+-			tooltip = "UNPIN_MARKET"
+-		}
+-
+-		blockoverride "unpin_properties" {
+-			visible = "[Not(MarketPanel.GetMarket.IsPinnedInOutliner)]"
+-			onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
+-			datacontext = "[MarketPanel.GetMarket]"
+-			tooltip = "PIN_MARKET"
+-		}
+-
+-		blockoverride "goto_visibility" {
+-			visible = yes
+-		}
+-
+-		blockoverride "goto_properties" {
+-			onclick = "[Market.AccessMarketCapital.ZoomToCapital]"
+-			tooltip = "ZOOM_TO_MARKET_CAPITAL"
+-			enabled = "[Not( Market.AccessMarketCapital.IsZoomingToCapital )]"
+-		}
++	
++		### BEGIN MODULAR UI PATCH
++		# blockoverride "pin_visibility" {
++		# 	visible = yes
++		# }
++
++		# blockoverride "pin_properties" {
++		# 	visible = "[MarketPanel.GetMarket.IsPinnedInOutliner]"
++		# 	onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
++		# 	datacontext = "[MarketPanel.GetMarket]"
++		# 	tooltip = "UNPIN_MARKET"
++		# }
++
++		# blockoverride "unpin_properties" {
++		# 	visible = "[Not(MarketPanel.GetMarket.IsPinnedInOutliner)]"
++		# 	onclick = "[MarketPanel.GetMarket.TogglePinInOutliner]"
++		# 	datacontext = "[MarketPanel.GetMarket]"
++		# 	tooltip = "PIN_MARKET"
++		# }
++
++		# blockoverride "goto_visibility" {
++		# 	visible = yes
++		# }
++
++		# blockoverride "goto_properties" {
++		# 	onclick = "[Market.AccessMarketCapital.ZoomToCapital]"
++		# 	tooltip = "ZOOM_TO_MARKET_CAPITAL"
++		# 	enabled = "[Not( Market.AccessMarketCapital.IsZoomingToCapital )]"
++		# }
++		### END MODULAR UI PATCH
+ 	}
+ 
+ 	type market_panel_details_content = container {
+@@ -1807,6 +1841,51 @@
+ 		}
+ 	}
+ 
++	type market_panel_world_market_trade_content = flowcontainer {
++		direction = vertical
++
++		flowcontainer = {
++			datamodel = "[Market.AccessMarketGoods( MarketPanel.GetFilters )]"
++			direction = vertical
++			parentanchor = hcenter
++			spacing = 8
++			margin_top = 8
++			margin_bottom = 4
++			
++			item = {
++				market_world_market_goods_list_item = {}
++			}
++		}
++
++		default_header_2texts = {
++			visible = "[GetVariableSystem.Exists( 'tariffs_show_all' )]"
++			parentanchor = hcenter
++
++			blockoverride "text1" {
++				text = "GOODS_WITHOUT_WORLD_MARKET_TRADE"
++			}
++		}	
++
++		flowcontainer = {
++			visible = "[GetVariableSystem.Exists( 'tariffs_show_all' )]"
++			datamodel = "[Market.AccessMarketGoods( MarketPanel.GetFilters )]"
++			
++			direction = vertical
++			spacing = 8
++			margin_top = 8
++			margin_bottom = 4
++			parentanchor = hcenter
++			
++			item = {
++				market_world_market_goods_list_item = {
++					blockoverride "market_world_market_goods_list_item_visibility" {
++						visible = "[And(IsZero_CFixedPoint(Market.GetImportedAmount(Goods.Self)), IsZero_CFixedPoint(Market.GetExportedAmount(Goods.Self)))]"
++					}
++				}
++			}
++		}
++	}
++	
+ 	type market_world_market_goods_list_item = widget {
+ 		
+ 

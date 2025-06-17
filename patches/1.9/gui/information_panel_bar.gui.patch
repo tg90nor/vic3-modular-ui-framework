@@ -1,0 +1,55 @@
+--- a/vanilla_files/1.9/gui/information_panel_bar.gui
++++ b/gui/information_panel_bar.gui
+@@ -25,6 +25,18 @@
+ 
+ 
+ 
++### BEGIN MODULAR UI PATCH
++@big_button_height = 50
++@small_button_height = 40
++@spacing_widget_height = 20
++@mui_spacing_widget_position = @[maplist_position+small_button_height]
++@more_spreadsheets_position = @[mui_spacing_widget_position+spacing_widget_height]
++@cheat_menu_position = @[more_spreadsheets_position+small_button_height]
++@victoria_universalis_iv_position = @[cheat_menu_position+small_button_height]
++### END MODULAR UI PATCH
++
++
++
+ types information_panel_bar_types {
+ 	type information_panel_bar = widget {
+ 		name = "information_panel_bar"
+@@ -750,6 +762,33 @@
+ 					tooltip = "MAP_LIST_TOOLTIP"
+ 					input_action = map_list
+ 				}
++				### BEGIN MODULAR UI PATCH
++				sidebar_spacing_widget = {
++					position = { 0 @mui_spacing_widget_position }
++					size = { 100% @spacing_widget_height }
++				}
++				### Mod: More Spreadsheets
++				sidebar_mod_placeholder = {
++					position = { 0 @more_spreadsheets_position }
++				}
++				more_spreadsheets_sidebar_button = {
++					position = { 0 @more_spreadsheets_position }
++				}
++				### Mod: Cheat Menu
++				sidebar_mod_placeholder = {
++					position = { 0 @cheat_menu_position }
++				}
++				cheat_menu_sidebar_button = {
++					position = { 0 @cheat_menu_position }
++				}
++				### Mod: Victoria Universalis IV
++				sidebar_mod_placeholder = {
++					position = { 0 @victoria_universalis_iv_position }
++				}
++				victoria_universalis_iv_sidebar_button = {
++					position = { 0 @victoria_universalis_iv_position }
++				}
++				### END MODULAR UI PATCH
+ 			}
+ 		}
+ 	}
